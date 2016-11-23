@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Author: Marguerite Su <i@marguerite.su>
 # License: GPL-3.0
 # Description: Download Bing Wallpaper of the Day and set it as your Linux Desktop.
@@ -27,7 +27,7 @@ if [ "$#" == 0 ] ; then
   # The mkt parameter determines which Bing market you would like to
   # obtain your images from.
   mkt="zh-CN"
-  exitAfterRunning=false
+  exitAfterRunning=true
 
 elif [ "$#" == 2 ] ; then
   # Valid values are:
@@ -151,7 +151,7 @@ while true; do
     TOMORROW=$(date --date="tomorrow" +%Y-%m-%d)
     TOMORROW=$(date --date="$TOMORROW 00:10:00" +%s)
 
-    for picRes in _1920x1200 _1366x768 _1280x720 _1024x768; do
+    for picRes in _1920x1080; do
 
     # Extract the relative URL of the Bing pic of the day from
     # the XML data retrieved from xmlURL, form the fully qualified
@@ -211,9 +211,7 @@ while true; do
     fi
 
     if [[ $DE = "kde" ]]; then
-      test -e /usr/bin/xdotool || sudo zypper --no-refresh install xdotool
-      test -e /usr/bin/gettext || sudo zypper --no-refresh install gettext-runtime
-      ./kde4_set_wallpaper.sh $saveDir$picName
+      "${0%/*}/kde5_set_wallpaper.sh" $saveDir$picName
     fi
 
     if [[ $DE = "lxqt" ]] ; then

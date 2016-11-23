@@ -1,0 +1,25 @@
+#!/bin/bash
+# Author: ZhengJian
+# Version: 1.0
+# License: GPL-3.0
+# Description: set a picture as kde5 wallpaper.
+
+js=$(mktemp)
+cat > $js <<_EOF
+qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript '
+
+var allDesktops = desktops();
+print (allDesktops);
+
+for (i=0;i<allDesktops.length;i++) {
+    d = allDesktops[i];
+    d.wallpaperPlugin = "org.kde.image";
+    d.currentConfigGroup = Array("Wallpaper", "org.kde.image", "General");
+    d.writeConfig("Image", "file://$1")
+}
+'
+_EOF
+
+bash "$js"
+rm -f "$js"
+exit 0
