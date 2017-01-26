@@ -26,8 +26,8 @@ fi
 if [ "$#" == 0 ] ; then
   # The mkt parameter determines which Bing market you would like to
   # obtain your images from.
-  mkt="zh-CN"
-  exitAfterRunning=true
+  mkt="de-DE"
+  exitAfterRunning=false
 
 elif [ "$#" == 2 ] ; then
   # Valid values are:
@@ -66,7 +66,7 @@ xmlURL="http://www.bing.com/HPImageArchive.aspx?format=xml&idx=$idx&n=1&mkt=$mkt
 
 # $saveDir is used to set the location where Bing pics of the day
 # are stored.  $HOME holds the path of the current user's home directory
-saveDir=$HOME'/Pictures/Bing/'
+saveDir=$HOME'/.bing_wallpapers'
 
 # Create saveDir if it does not already exist
 mkdir -p $saveDir
@@ -105,7 +105,7 @@ detectDE()
            ;;
          X-Cinnamon)
            DE=cinnamon
-           ;; 
+           ;;
       esac
     fi
 
@@ -151,7 +151,7 @@ while true; do
     TOMORROW=$(date --date="tomorrow" +%Y-%m-%d)
     TOMORROW=$(date --date="$TOMORROW 00:10:00" +%s)
 
-    for picRes in _1920x1080; do
+    for picRes in _1920x1200 _1366x768 _1280x720 _1024x768; do
 
     # Extract the relative URL of the Bing pic of the day from
     # the XML data retrieved from xmlURL, form the fully qualified
