@@ -107,6 +107,9 @@ detectDE()
            DE=cinnamon
            ;;
       esac
+    else
+           # DE not found, maybe used WM
+           DE=WM
     fi
 
     if [ x"$DE" = x"" ]; then
@@ -206,8 +209,8 @@ while true; do
       DISPLAY=:0 GSETTINGS_BACKEND=dconf gsettings set org.gnome.desktop.background picture-options $picOpts
     fi
 
-    if [[ $DE = "gnome3" ]]; then
-    gsettings set org.gnome.desktop.background picture-uri '"file://'$saveDir$picName'"'
+    if [[ $DE = "mate" ]]; then
+      dconf write /org/mate/desktop/background/picture-filename \"$saveDir$picName\"
     fi
 
     if [[ $DE = "kde" ]]; then
@@ -220,6 +223,10 @@ while true; do
 
     if [[ $DE = "xfce" ]]; then
       ./xfce4_set_wallpaper.sh $saveDir$picName
+    fi
+
+    if [[ $DE = "WM" ]]; then
+      feh --bg-tile $saveDir$picName
     fi
 
     if [ "$exitAfterRunning" = true ] ; then
