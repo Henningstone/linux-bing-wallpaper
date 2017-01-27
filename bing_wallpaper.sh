@@ -156,41 +156,49 @@ while true; do
 
     for picRes in _1920x1200 _1366x768 _1280x720 _1024x768; do
 
-    # Extract the relative URL of the Bing pic of the day from
-    # the XML data retrieved from xmlURL, form the fully qualified
-    # URL for the pic of the day, and store it in $picURL
-    picURL=$bing$(echo $(curl -s $xmlURL) | grep -oP "<urlBase>(.*)</urlBase>" | cut -d ">" -f 2 | cut -d "<" -f 1)$picRes$picExt
+        # Extract the relative URL of the Bing pic of the day from
+        # the XML data retrieved from xmlURL, form the fully qualified
+        # URL for the pic of the day, and store it in $picURL
+        picURL=$bing$(echo $(curl -s $xmlURL) | grep -oP "<urlBase>(.*)</urlBase>" | cut -d ">" -f 2 | cut -d "<" -f 1)$picRes$picExt
 
-    # $picName contains the filename of the Bing pic of the day
-    picName=${picURL##*/}
+        # $picName contains the filename of the Bing pic of the day
+        picName=${picURL##*/}
 
-    # Download the Bing pic of the day
-    curl -s -o $saveDir$picName -L $picURL
+        printf "Try downloading from $picURL... "
 
-    # Test if download was successful.
-    downloadResult=$?
-    if [[ $downloadResult -ge 1 ]]; then
-        rm -rf $saveDir$picName && continue
-    fi
+        # Download the Bing pic of the day
+        curl -s -o $saveDir$picName -L $picURL
 
-    # Test if it's a pic
-    file --mime-type -b $saveDir$picName | grep "^image/" > /dev/null && break
+        # Test if download was successful.
+        downloadResult=$?
+        if [[ $downloadResult -ge 1 ]]; then
+            echo "ERROR, could not download anything."
+            rm -rf $saveDir$picName && continue
+        else
+            echo "OK, download successful!"
+        fi
 
-    rm -rf $saveDir$picName
+        printf "Testing if it actually is a picture... "
+
+        # Test if it's a pic
+        file --mime-type -b $saveDir$picName | grep "^image/" > /dev/null && echo "OK, file is of type image." && break
+        echo "ERROR, file does not appear to be an image (mime-type: $(file --mime-type -b $saveDir$picName))"
+
+        rm -rf $saveDir$picName
     done
     detectDE
 
     if [[ downloadResult -ge 1 ]]; then
-          echo "Couldn't download any picture."
-          exit 0;
+        echo "Couldn't download any picture."
+        exit 0;
     fi
 
     if [[ $DE = "cinnamon" ]]; then
-          # Set the Cinnamon wallpaper
-          DISPLAY=:0 GSETTINGS_BACKEND=dconf gsettings set org.cinnamon.desktop.background picture-uri '"file://'$saveDir$picName'"'
+      # Set the Cinnamon wallpaper
+      DISPLAY=:0 GSETTINGS_BACKEND=dconf gsettings set org.cinnamon.desktop.background picture-uri '"file://'$saveDir$picName'"'
 
-          # Set the Cinnamon wallpaper picture options
-          DISPLAY=:0 GSETTINGS_BACKEND=dconf gsettings set org.cinnamon.desktop.background picture-options $picOpts
+      # Set the Cinnamon wallpaper picture options
+      DISPLAY=:0 GSETTINGS_BACKEND=dconf gsettings set org.cinnamon.desktop.background picture-options $picOpts
     fi
 
     if [[ $DE = "gnome" ]]; then
