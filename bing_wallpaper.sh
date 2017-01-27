@@ -66,7 +66,7 @@ xmlURL="http://www.bing.com/HPImageArchive.aspx?format=xml&idx=$idx&n=1&mkt=$mkt
 
 # $saveDir is used to set the location where Bing pics of the day
 # are stored.  $HOME holds the path of the current user's home directory
-saveDir=$HOME'/.bing_wallpapers'
+saveDir=$HOME"/.bing_wallpapers/$(date +%Y-%m-%d)/"
 
 # Create saveDir if it does not already exist
 mkdir -p $saveDir
